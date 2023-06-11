@@ -17,6 +17,7 @@ const posts = [
   }
 ]
 
+//ミドルウェアauthenticateToken関数を実行して検証を行う
 app.get('/posts', authenticateToken, (req, res) => {
   res.json(posts.filter(post => post.username === req.user.name));
 })
@@ -39,6 +40,7 @@ function authenticateToken(req, res, next) {
   //tokenがnullだったらアクセス権を与えない
   if (token == null) return res.sendStatus(401);
 
+  //JWTトークンが有効かどうかを秘密鍵を使って検証する
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     //トークンをもっているが有効ではない
     if (err) return res.sendStatus(403);
